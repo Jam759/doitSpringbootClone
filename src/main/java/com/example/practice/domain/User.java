@@ -27,49 +27,56 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "nickname", unique = true)
+    private String nickname;
+
     @Column(name = "password")
     private String password;
 
     @Builder
-    public User(String email, String password, String auth){
+    public User(String email, String password, String nickname) {
         this.email = email;
-        this.password =password;
+        this.password = password;
+        this.nickname = nickname;
     }
 
-    @Override // 사용자 권한 목록 반환
-    public Collection<? extends GrantedAuthority> getAuthorities(){
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("user"));
     }
 
-    @Override // 사용자 이름 반환(unique)
-    public String getUsername(){
+    @Override
+    public String getUsername() {
         return email;
     }
 
-    @Override // 비밀번호 반환
-    public String getPassword(){
+    @Override
+    public String getPassword() {
         return password;
     }
-
     @Override
-    public boolean isAccountNonExpired(){
+    public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
-    public  boolean isAccountNonLocked(){
+    public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
-    public boolean isCredentialsNonExpired(){
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return true;
     }
 
+    public User update(String nickname) {
+        this.nickname = nickname;
+        return this;
+    }
 
 }

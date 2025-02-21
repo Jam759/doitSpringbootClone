@@ -16,25 +16,25 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Long Save(AddUserRequest dto){
 
-        Optional<User> temp = userRepository.findByEmail(dto.getEmail());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        if(temp.isPresent()){
-            return 0L;
-        }else{
-            return userRepository.save(User.builder()
-                    .email(dto.getEmail())
-                    .password(bCryptPasswordEncoder.encode(dto.getPassword()))
-                    .build()).getId();
-        }
+        return userRepository.save(User.builder()
+                .email(dto.getEmail())
+                .password(encoder.encode(dto.getPassword()))
+                .build()).getId();
 
     }
 
     public User findById(Long userId){
         return userRepository.findById(userId)
+                .orElseThrow( () -> new IllegalArgumentException("Unexpected User"));
+    }
+
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email)
                 .orElseThrow( () -> new IllegalArgumentException("Unexpected User"));
     }
 
